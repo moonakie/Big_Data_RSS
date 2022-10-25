@@ -11,7 +11,7 @@ val libVersion =
 
 lazy val root = (project in file("."))
   .settings(
-    name := "untitled",
+    name := "API",
     libraryDependencies ++= Seq(
       "com.sparkjava" % "spark-core"         % libVersion.javaSpark,
       "io.circe"      %% "circe-parser" % libVersion.circe,
