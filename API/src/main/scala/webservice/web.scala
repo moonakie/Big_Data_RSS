@@ -1,8 +1,11 @@
 package webservice
 
-import io.circe._, io.circe.parser._
+import io.circe.*
+import io.circe.parser.*
 import spark.Spark.*
 import spark.{Request, Response}
+
+import scala.util.Try
 
 
 object web {
@@ -15,16 +18,17 @@ object web {
       "/articles",
       { (request: Request, response: Response) =>
         response.`type`("application/json")
-        val userID =
-          Option(
-            request.queryParams("user_id")
-          ).getOrElse("-1").toInt
-        if(userID < 0){
+        val tryUserID = Try(
+          request.queryParams("user_id")
+            .toInt
+        )
+        if(tryUserID.isFailure){
           response.status(404)
           s"""{"error": "User not found"}"""
         }
         else{
-          s"""{"message": "$userID"}"""
+          val userId = tryUserID.get
+          s"""{"message": "$userId"}"""
         }
 
       }
