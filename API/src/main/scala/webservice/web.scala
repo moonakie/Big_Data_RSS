@@ -1,8 +1,11 @@
 package webservice
 
-import io.circe._, io.circe.parser._
+import io.circe.*
+import io.circe.parser.*
 import spark.Spark.*
 import spark.{Request, Response}
+
+import scala.util.Try
 
 
 object web {
@@ -15,25 +18,17 @@ object web {
       "/articles",
       { (request: Request, response: Response) =>
         response.`type`("application/json")
-        val userID =
-          Option(
-            request.queryParams("user_id")
-          ).getOrElse("-1").toInt
-        if(userID < 0){
+        val tryUserID = Try(
+          request.queryParams("user_id")
+            .toInt
+        )
+        if(tryUserID.isFailure){
           response.status(404)
           s"""{"error": "User not found"}"""
         }
         else{
-          s"""{[{"article_id": "id1", "title": "some title 1", "pubDate": "2022-02-03"},
-             {"article_id": "id2", "title": "some title 2", "pubDate": "2022-02-03"},
-             {"article_id": "id3", "title": "some title 3", "pubDate": "2022-02-03"},
-             {"article_id": "id4", "title": "some title 4", "pubDate": "2022-02-03"},
-             {"article_id": "id5", "title": "some title 5", "pubDate": "2022-02-03"},
-             {"article_id": "id6", "title": "some title 6", "pubDate": "2022-02-03"},
-             {"article_id": "id7", "title": "some title 7", "pubDate": "2022-02-03"},
-             {"article_id": "id8", "title": "some title 8", "pubDate": "2022-02-03"},
-             {"article_id": "id9", "title": "some title 9", "pubDate": "2022-02-03"},
-             {"article_id": "id10", "title": "some title 10", "pubDate": "2022-02-03"},]}"""
+          val userId = tryUserID.get
+          s"""{"message": "$userId"}"""
         }
 
       }
@@ -46,7 +41,7 @@ object web {
 
         val articleId = request.params("article_id")
 
-        s"""{"article_id": "$articleId", "title": "some title 1", "pubDate": "2022-02-03"}"""
+        s"""{"message": "hello $articleId"}"""
       }
     )
 
