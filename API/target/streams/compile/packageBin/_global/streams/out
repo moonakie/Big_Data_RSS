@@ -1,0 +1,11 @@
+[0m[[0m[0mdebug[0m] [0m[0mPackaging /Users/ftl/IdeaProjects/Big_Data_RSS/API/target/scala-3.2.0/api_3-0.1.0-SNAPSHOT.jar ...[0m
+[0m[[0m[0mdebug[0m] [0m[0mInput file mappings:[0m
+[0m[[0m[0mdebug[0m] [0m[0m	webservice[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /Users/ftl/IdeaProjects/Big_Data_RSS/API/target/scala-3.2.0/classes/webservice[0m
+[0m[[0m[0mdebug[0m] [0m[0m	webservice/web.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /Users/ftl/IdeaProjects/Big_Data_RSS/API/target/scala-3.2.0/classes/webservice/web.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	webservice/web$.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /Users/ftl/IdeaProjects/Big_Data_RSS/API/target/scala-3.2.0/classes/webservice/web$.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	webservice/web.tasty[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /Users/ftl/IdeaProjects/Big_Data_RSS/API/target/scala-3.2.0/classes/webservice/web.tasty[0m
+[0m[[0m[0mdebug[0m] [0m[0mDone packaging.[0m
