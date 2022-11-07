@@ -28,3 +28,4 @@ hs_err_pid*
 API/project/target/
 API/target
 API/.idea
+/API/src/main/scala/cassandra/cassandra/data/data/
