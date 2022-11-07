@@ -1,0 +1,5 @@
+package cassandra
+
+class ConnectorCassandra {
+
+}

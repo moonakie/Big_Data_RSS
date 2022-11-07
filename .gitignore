@@ -25,3 +25,6 @@ hs_err_pid*
 
 #intelliJ
 .idea/
+API/project/target/
+API/target
+API/.idea
