@@ -1,10 +1,12 @@
 package webservice
 
+import cassandra.ConnectorCassandra
 import io.circe.*
 import io.circe.parser.*
 import spark.Spark.*
 import spark.{Request, Response}
 
+import java.util.UUID
 import scala.util.Try
 
 
@@ -20,7 +22,6 @@ object web {
         response.`type`("application/json")
         val tryUserID = Try(
           request.queryParams("user_id")
-            .toInt
         )
         if(tryUserID.isFailure){
           response.status(404)
@@ -28,7 +29,8 @@ object web {
         }
         else{
           val userId = tryUserID.get
-          s"""{"message": "$userId"}"""
+          val session =  ConnectorCassandra.connect()
+          ConnectorCassandra.get10Article(UUID.fromString(userId),session)
         }
 
       }
@@ -38,10 +40,18 @@ object web {
       "/articles/:article_id",
       { (request: Request, response: Response) =>
         response.`type`("application/json")
-
-        val articleId = request.params("article_id")
-
-        s"""{"message": "hello $articleId"}"""
+        val tryActicleId = Try (
+        request.params("article_id")
+        )
+        if(tryActicleId.isFailure){
+          response.status(404)
+          s"""{"error": "User not found"}"""
+        }
+        else {
+          val articleId = tryActicleId.get
+          val session = ConnectorCassandra.connect()
+          ConnectorCassandra.getArticleById(UUID.fromString(articleId), session)
+        }
       }
     )
 
