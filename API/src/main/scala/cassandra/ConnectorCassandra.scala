@@ -10,7 +10,7 @@ import com.datastax.oss.driver.api.core.cql.ResultSet
 import java.net.InetAddress
 import java.net.InetSocketAddress
 import java.util.UUID
-
+import java.util.stream.Collectors
 
 object ConnectorCassandra {
   //Create a connexion to localhost cassandra docker server
@@ -22,19 +22,49 @@ object ConnectorCassandra {
     return session
   }
 
-  //Create a query to get all the articles of a given userId
-  def getArticlesByUser(userId: UUID, session : CqlSession): ResultSet ={
+  //Get all the articles from a given userId
+  def getArticlesIdByUserId(userId: UUID, session : CqlSession): ResultSet ={
     val query = selectFrom("projetRSS","articlebyuser")
       .all()
       .whereColumn("iduser")
       .isEqualTo(bindMarker())
+      .limit(10)
 
     val  prepareStatement = session.prepare(query.build())
     val resultSet = session.execute(prepareStatement.bind(userId))
     return resultSet
   }
 
+  //Get an article from a given id
+  def getArticleById(articleId: UUID, session: CqlSession): String = {
+    val query = selectFrom("projetRSS", "article")
+      .all()
+      .whereColumn("id")
+      .isEqualTo(bindMarker())
 
+    val prepareStatement = session.prepare(query.build())
+    val resultSet = session.execute(prepareStatement.bind(articleId))
+    val row = resultSet.one()
+    val article_id = row.getUuid("UUID")
+    val title = row.getString("title")
+    val pubDate = row.getLocalTime("pubDate")
+    val link = row.getString("link")
+    s"""{"article_id": "$articleId", "title": "$title", "pubDate": "$pubDate", "link": "$link"}"""
+
+  }
+
+  //Get the 10 last articles
+  def get10Article(userId: UUID, session: CqlSession): String = {
+    val resultSet = getArticlesIdByUserId(userId, session)
+    resultSet.map{row =>
+      getArticleById(row.getUuid("idarticle"),session)
+    }.all().stream().collect(Collectors.joining(", ", "{[", "]}"))
+
+  }
+
+  def saveArticle(map : Map[String, String], session: CqlSession): Unit = {
+    //not implement yet, kafka do this job
+  }
 
   def main(args : Array[String]) : Unit =
     val session =  connect();
@@ -50,8 +80,6 @@ object ConnectorCassandra {
 //    val select = selectFrom("projetRSS","user").all()
 //    val resultSet = session.execute(select.build())
 
-    val resultSet = getArticlesByUser(UUID.fromString("b92c0997-d91b-4005-baa0-4fc1e17082c5"),session)
-    resultSet.forEach(row => println(row.getString("name")))
 
     session.close()
 }
