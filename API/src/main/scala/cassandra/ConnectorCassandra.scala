@@ -66,7 +66,6 @@ object ConnectorCassandra {
     val article_id = row.getUuid("id")
     val title = row.getString("title")
     val pubDate = row.getString("pubDate")
-    val link = row.getString("link")
     s"""{"article_id": "$article_id", "title": "$title", "pubDate": "$pubDate"}"""
 
   }
@@ -75,7 +74,7 @@ object ConnectorCassandra {
   def get10Article(userId: UUID, session: CqlSession): String = {
     val resultSet = getArticlesIdByUserId(userId, session)
     resultSet.map{row =>
-      getArticleById(row.getUuid("idarticle"),session)
+      getArticleSummaryById(row.getUuid("idarticle"),session)
     }.all().stream().collect(Collectors.joining(", ", "{[", "]}"))
 
   }
