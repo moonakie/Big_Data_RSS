@@ -45,11 +45,29 @@ object ConnectorCassandra {
     val prepareStatement = session.prepare(query.build())
     val resultSet = session.execute(prepareStatement.bind(articleId))
     val row = resultSet.one()
-    val article_id = row.getUuid("UUID")
+    val article_id = row.getUuid("id")
     val title = row.getString("title")
-    val pubDate = row.getLocalTime("pubDate")
+    val pubDate = row.getString("pubDate")
     val link = row.getString("link")
-    s"""{"article_id": "$articleId", "title": "$title", "pubDate": "$pubDate", "link": "$link"}"""
+    val description = row.getString("description")
+    s"""{"article_id": "$article_id", "title": "$title", "pubDate": "$pubDate", "link": "$link", "description": "$description"}"""
+
+  }
+
+  def getArticleSummaryById(articleId: UUID, session: CqlSession): String = {
+    val query = selectFrom("projetRSS", "article")
+      .all()
+      .whereColumn("id")
+      .isEqualTo(bindMarker())
+
+    val prepareStatement = session.prepare(query.build())
+    val resultSet = session.execute(prepareStatement.bind(articleId))
+    val row = resultSet.one()
+    val article_id = row.getUuid("id")
+    val title = row.getString("title")
+    val pubDate = row.getString("pubDate")
+    val link = row.getString("link")
+    s"""{"article_id": "$article_id", "title": "$title", "pubDate": "$pubDate"}"""
 
   }
 
